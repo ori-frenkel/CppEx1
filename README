@@ -1,0 +1,13 @@
+cpp_ex1
+ori.frenkel
+314643164
+######
+
+Explanation about your exercise:
+In this exercise, I implemented, GField - object that reperesnt, Gaula's Field
+GFNumber - number in Gaula's Field
+Implemented, brute force algorithm to find the prime factorial of number (of type GFNumber)
+Implemented, rho ford algroithm, which sometimes works, and find prime factorial of number
+fater than the brute force approch, if not working, than find according to bruth force approch.
+Implemented, isPrime function, to find if a number is prime or not. complexity -  O(sqrt(n)).
+dynamically allocated array, and freed the memory in the destructor.

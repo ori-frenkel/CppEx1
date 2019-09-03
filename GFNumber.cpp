@@ -359,8 +359,8 @@ GFNumber GFNumber::operator * (const long &rparam) const
  */
 GFNumber &GFNumber::operator %= (const long &rparam)
 {
-    const long tempRparam = modulo(rparam, _field.getOrder());
     assert(rparam != 0);
+    const long tempRparam = modulo(rparam, _field.getOrder());
     _n = modulo(_n, modulo(tempRparam, _field.getOrder()));
     return *this;
 }
@@ -372,8 +372,8 @@ GFNumber &GFNumber::operator %= (const long &rparam)
  */
 GFNumber GFNumber::operator % (const long &rparam) const
 {
-    const long tempRparam = modulo(rparam, _field.getOrder());
     assert(rparam != 0);
+    const long tempRparam = modulo(rparam, _field.getOrder());
     return GFNumber(modulo((_n % tempRparam), _field.getOrder()), _field);
 }
 
@@ -455,7 +455,8 @@ long _lRand(const long min, const long max)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<unsigned long long> dis(min, max);
+    std::uniform_int_distribution<unsigned long long> dis((unsigned long long int) min, \
+                                                           (unsigned long long int) max);
     return static_cast<long>(dis(gen));
 }
 
@@ -481,7 +482,7 @@ long GFNumber::_pollardRhoHelper(const long n) const
         y = _functionX(_functionX(y, n), n);
         p = GField::gcdHelper(labs(x - y), n, n);
     }
-    if(p == n)
+    if(p == n || p == 0)
     {
         return -1;
     }
@@ -498,7 +499,6 @@ GFNumber *GFNumber::_pollardRho(long n, int* sizeOfArr) const
     GFNumber *firstArray = nullptr;
     firstArray = new GFNumber[1];
     int firstArraySize = 0;
-    GFNumber *secondArr = nullptr;
     int secondArraySize = 0;
     long prime = -1;
     bool first = true;
@@ -510,7 +510,9 @@ GFNumber *GFNumber::_pollardRho(long n, int* sizeOfArr) const
         // case that pollard rho failed
         if((prime == -1 || prime == 0) && first)
         {
-            return nullptr;
+            //std::cout <<" scallar 1\n";
+            *sizeOfArr = 0;
+            return firstArray;
         }
         // pollard rho failed, but after succeed before
         else if(prime == -1 && first == false)
@@ -519,7 +521,7 @@ GFNumber *GFNumber::_pollardRho(long n, int* sizeOfArr) const
             // continue from that point with brute force approach
             second_arr = _directSearchFactorization(n, &secondArraySize);
             firstArray = _mergeArrays(firstArray, firstArraySize, second_arr, secondArraySize);
-            firstArray += secondArraySize;
+            firstArraySize += secondArraySize;
             *sizeOfArr = firstArraySize;
             return firstArray;
 
@@ -541,7 +543,7 @@ GFNumber *GFNumber::_pollardRho(long n, int* sizeOfArr) const
                                                     &sizeFactorizationArray);
                 firstArray = _mergeArrays(firstArray, firstArraySize, factroizeThePrimeArray, \
                                           sizeFactorizationArray);
-                firstArraySize += secondArraySize;
+                firstArraySize += sizeFactorizationArray;
             }
             n = n / prime;
             first = false;
@@ -549,7 +551,7 @@ GFNumber *GFNumber::_pollardRho(long n, int* sizeOfArr) const
 
     }
     firstArraySize++;
-    firstArray = _allocateAndDeleteArr(firstArray, firstArraySize);;
+    firstArray = _allocateAndDeleteArr(firstArray, firstArraySize);
     firstArray[firstArraySize - 1] = GFNumber(n, _field);
     *sizeOfArr = firstArraySize;
     return firstArray;
@@ -608,9 +610,9 @@ GFNumber *GFNumber::getPrimeFactors(int *sizeOfArr) const
 
     firstArray = _pollardRho(n, &firstArraySize);
     // in case pollard rho failed on first attempt, continue with brute force
-    if(firstArray == nullptr)
+    if(firstArraySize == 0)
     {
-        delete[](firstArray);
+        delete[] firstArray;
         firstArray = _directSearchFactorization(_n, &firstArraySize);
         *sizeOfArr = firstArraySize;
         return firstArray;
@@ -633,7 +635,11 @@ GFNumber *GFNumber::getPrimeFactors(int *sizeOfArr) const
 */
 long GFNumber::modulo(const long number, const long order)
 {
-    return (number % order + order) % order;
+    if(number > 0)
+    {
+        return (number % order);
+    }
+    return ((number % order ) + order) % order;
 }
 
 /**

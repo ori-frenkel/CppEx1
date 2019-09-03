@@ -2,8 +2,8 @@
 // Created by Ori Frenkel  on 27/08/2019.
 //
 
-#ifndef CPPEX1_GFNUMBER_H
-#define CPPEX1_GFNUMBER_H
+#ifndef CPPEX1S_GFNUMBER_H
+#define CPPEX1S_GFNUMBER_H
 
 class GField; // forward declaration
 
@@ -59,7 +59,7 @@ public:
      * @param order - modulo
     * @return (number % order)
     */
-    static long modulo(const long number, const long order);
+    static long modulo(long number, long order);
 
     /**
      * Getting a number (n) and return true if it even number

@@ -2,8 +2,8 @@
 // Created by Ori Frenkel on 27/08/2019.
 //
 
-#ifndef CPPEX1_GFIELD_H
-#define CPPEX1_GFIELD_H
+#ifndef CPPEX1S_GFIELD_H
+#define CPPEX1S_GFIELD_H
 
 class GFNumber; // forward declaration
 
